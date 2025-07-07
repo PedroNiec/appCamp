@@ -7,6 +7,10 @@ class Equipe {
         $this->pdo = $pdo;
     }
 
+    public function getPdo() {
+        return $this->pdo;
+    }
+
     public function listarPorCompeticao($competicao_id) {
         $sql = "SELECT * FROM equipes WHERE competicao_id = :competicao_id ORDER BY nome ASC";
         $stmt = $this->pdo->prepare($sql);

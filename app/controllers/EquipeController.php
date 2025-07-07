@@ -6,6 +6,10 @@ class EquipeController {
 
     public function __construct($pdo) {
         $this->equipe = new Equipe($pdo);
+    } 
+
+    public function getPdo() {
+        return $this->pdo;
     }
 
     public function listarEquipesPorCompeticao($competicao_id) {
@@ -55,4 +59,12 @@ class EquipeController {
         header("Location: gerenciar_equipes.php?id=" . $competicao_id);
         exit;
     }
+
+    public function listarTodasEquipes() {
+        $sql = "SELECT * FROM times1 ORDER BY nome ASC";
+        $stmt = $this->equipe->getPdo()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 }

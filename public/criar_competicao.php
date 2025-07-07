@@ -17,59 +17,121 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Criar Competição</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>Criar Competição</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label>Nome:</label><br>
-        <input type="text" name="nome" required><br><br>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen px-4">
 
-        <label>Modalidade:</label><br>
-        <select name="modalidade_id" required>
-            <option value="">Selecione</option>
-            <?php
-            $modalidades = $pdo->query("SELECT id, nome FROM modalidades ORDER BY nome")->fetchAll();
-            foreach ($modalidades as $mod) {
-                echo "<option value='{$mod['id']}'>{$mod['nome']}</option>";
-            }
-            ?>
-        </select><br><br>
+    <div class="bg-white w-full max-w-xl rounded-xl shadow-md p-8 space-y-6">
+        <h2 class="text-2xl font-bold text-gray-800 text-center">Criar Nova Competição</h2>
 
-         <label>Formato competição:</label><br>
-         <select name="formato_competicao_id" required>
-            <option value="">Selecione</option>
-            <?php
-            $formatos = $pdo->query("SELECT id, nome FROM formatos_competicoes ORDER BY nome")->fetchAll();
-            foreach ($formatos as $value) {
-                echo "<option value='{$value['id']}'>{$value['nome']}</option>";
-            }
-            ?>
-        </select><br><br>
-        
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
 
-        <label>Local:</label><br>
-        <input type="text" name="local" required><br><br>
+            <!-- Nome -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Nome</label>
+                <input type="text" name="nome" required
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
 
-        <label>Data de Início:</label><br>
-        <input type="date" name="data_inicio" required><br><br>
+            <!-- Modalidade -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Modalidade</label>
+                <select name="modalidade_id" required
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <option value="">Selecione</option>
+                    <?php
+                    $modalidades = $pdo->query("SELECT id, nome FROM modalidades ORDER BY nome")->fetchAll();
+                    foreach ($modalidades as $mod) {
+                        echo "<option value='{$mod['id']}'>{$mod['nome']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
 
-        <label>Data de Fim:</label><br>
-        <input type="date" name="data_fim" required><br><br>
+            <!-- Formato -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Formato da Competição</label>
+                <select name="formato_competicao_id" required
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <option value="">Selecione</option>
+                    <?php
+                    $formatos = $pdo->query("SELECT id, nome FROM formatos_competicoes ORDER BY nome")->fetchAll();
+                    foreach ($formatos as $value) {
+                        echo "<option value='{$value['id']}'>{$value['nome']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
 
-        <label>Categoria:</label><br>
-        <input type="text" name="categoria"><br><br>
+            <!-- Qtd Times e Grupos -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex flex-col flex-1">
+                    <label class="text-gray-700 mb-1">Qtd. de Equipes</label>
+                    <input type="number" name="qtd_times" required
+                        class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label class="text-gray-700 mb-1">Qtd. de Grupos</label>
+                    <input type="number" name="qtd_grupos" required
+                        class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+            </div>
 
-        <label>Regras:</label><br>
-        <textarea name="regras"></textarea><br><br>
+            <!-- Local -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Local</label>
+                <input type="text" name="local" required
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
 
-        <label>Upload de Regulamento (PDF):</label><br>
-        <input type="file" name="regulamento" accept="application/pdf"><br><br>
+            <!-- Data Início e Fim -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex flex-col flex-1">
+                    <label class="text-gray-700 mb-1">Data de Início</label>
+                    <input type="date" name="data_inicio" required
+                        class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label class="text-gray-700 mb-1">Data de Fim</label>
+                    <input type="date" name="data_fim" required
+                        class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+            </div>
 
-        <button type="submit">Cadastrar Competição</button>
-    </form>
+            <!-- Categoria -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Categoria</label>
+                <input type="text" name="categoria"
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
+
+            <!-- Regras -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Regras</label>
+                <textarea name="regras" rows="3"
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+            </div>
+
+            <!-- Regulamento -->
+            <div class="flex flex-col">
+                <label class="text-gray-700 mb-1">Upload de Regulamento (PDF)</label>
+                <input type="file" name="regulamento" accept="application/pdf"
+                    class="mt-1 text-gray-700">
+            </div>
+
+            <!-- Botão -->
+            <div class="pt-4 text-center">
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                    Cadastrar Competição
+                </button>
+            </div>
+        </form>
+            
+    </div>
 </body>
 </html>
