@@ -19,8 +19,9 @@ class JogadorController {
         }
 
         $dados = [
-            'equipe_id' => $postData['equipe_id'],
+            'time_id' => $postData['equipe_id'],
             'nome' => $postData['nome'],
+            'posicao' => $postData['posicao'],
             'cpf' => $postData['cpf'] ?? null,
             'rg' => $postData['rg'] ?? null,
             'data_nascimento' => $postData['data_nascimento'] ?? null,

@@ -61,7 +61,7 @@ class EquipeController {
     }
 
     public function listarTodasEquipes() {
-        $sql = "SELECT * FROM times1 ORDER BY nome ASC";
+        $sql = "SELECT * FROM times ORDER BY nome ASC";
         $stmt = $this->equipe->getPdo()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

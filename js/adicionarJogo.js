@@ -59,7 +59,13 @@ class AdicionarEquipe {
             rodada: this.form.querySelector('[name="rodada"]').value
         };
     
-       fetch('/appCamp/public/api/cadastrar_jogo.php', {
+        // ✅ Validação antes de enviar
+        if (!formData.competicao_id || !formData.time_a_id || !formData.time_b_id) {
+            alert('Por favor, preencha todos os campos obrigatórios antes de cadastrar o jogo.');
+            return;
+        }
+    
+        fetch('/appCamp/public/api/cadastrar_jogo.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -69,18 +75,23 @@ class AdicionarEquipe {
         })
         .then(res => res.json())
         .then(data => {
+            console.log("Retorno do servidor:", data); // 🩺 DEBUG
             if (data.success) {
-                alert(data.message); 
-                this.form.reset();  
+                alert(data.message);
+                if (this.form) {
+                    this.form.reset();
+                }
             } else {
                 alert('Erro: ' + data.message);
             }
         })
+        
         .catch(error => {
-            console.error('Erro na requisição:', error);
+            console.error('Erro na requisição:', error); // 🩺 DEBUG
             alert('Erro ao cadastrar jogo.');
         });
-    }
+        
+    }    
 }
 
 document.addEventListener('DOMContentLoaded', () => {

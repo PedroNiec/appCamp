@@ -32,7 +32,7 @@ class Equipe {
     }
 
     public function buscarPorId($id) {
-        $sql = "SELECT * FROM equipes WHERE id = :id LIMIT 1";
+        $sql = "SELECT * FROM times WHERE id = :id LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();

@@ -47,4 +47,22 @@ class Competicao {
 
         return $dados;
     }
+
+    public function listarJogosDaCompeticao($competicao_id) {
+        $sql = "
+            SELECT j.id, j.rodada, j.data, j.horario, j.local, j.status, j.placar_a, j.placar_b, j.criado_em,
+                   ta.nome AS equipe_a_nome,
+                   tb.nome AS equipe_b_nome
+            FROM jogos j
+            JOIN times ta ON j.equipe_a_id = ta.id
+            JOIN times tb ON j.equipe_b_id = tb.id
+            WHERE j.competicao_id = :competicao_id
+            ORDER BY j.criado_em DESC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':competicao_id' => $competicao_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    
 }

@@ -8,9 +8,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_tipo'] !== 'admin') {
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../app/controllers/EquipeController.php';
+require_once __DIR__ . '/../app/controllers/JogadorController.php';
+
 
 $equipeController = new EquipeController($pdo);
 $equipes = $equipeController->listarTodasEquipes();
+
 
 ?>
 
@@ -29,6 +32,14 @@ $equipes = $equipeController->listarTodasEquipes();
             <h2 class="text-xl sm:text-2xl font-semibold text-gray-800">Todas as Equipes Cadastradas</h2>
             <a href="dashboard.php" class="inline-flex items-center bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md transition">
                 <span class="material-icons-outlined mr-2 text-base">arrow_back</span> Voltar ao Painel
+            </a>
+        </div>
+
+        <!-- Botão para adicionar time -->
+        <div class="flex justify-end mb-4">
+            <a href="inserir_time_erp.php" 
+               class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition">
+                <span class="material-icons-outlined mr-2 text-base">add_circle</span> Adicionar Novo Time
             </a>
         </div>
 

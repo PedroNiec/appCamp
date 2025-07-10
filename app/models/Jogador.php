@@ -8,19 +8,20 @@ class Jogador {
     }
 
     public function listarPorEquipe($equipe_id) {
-        $sql = "SELECT * FROM jogadores WHERE equipe_id = :equipe_id ORDER BY nome ASC";
+        $sql = "SELECT * FROM jogadores WHERE time_id = :time_id ORDER BY nome ASC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':equipe_id' => $equipe_id]);
+        $stmt->execute([':time_id' => $equipe_id]);
         return $stmt->fetchAll();
     }
 
     public function criar($dados) {
-        $sql = "INSERT INTO jogadores (equipe_id, nome, cpf, data_nascimento, contato, rg)
-                VALUES (:equipe_id, :nome, :cpf, :data_nascimento, :contato, :rg)";
+        $sql = "INSERT INTO jogadores (time_id, nome, cpf, data_nascimento, contato, rg, posicao)
+                VALUES (:time_id, :nome, :cpf, :data_nascimento, :contato, :rg, :posicao)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':equipe_id' => $dados['equipe_id'],
+            ':time_id' => $dados['time_id'],
             ':nome' => $dados['nome'],
+            ':posicao' => $dados['posicao'],
             ':cpf' => $dados['cpf'],
             ':rg' => $dados['rg'],
             ':data_nascimento' => $dados['data_nascimento'],

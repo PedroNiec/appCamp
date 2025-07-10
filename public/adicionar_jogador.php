@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_tipo'] !== 'admin') {
@@ -7,70 +11,72 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_tipo'] !== 'admin') {
 }
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../app/controllers/EquipeController.php';
-require_once __DIR__ . '/../app/controllers/CompeticaoController.php';
 require_once __DIR__ . '/../app/controllers/JogadorController.php';
 
-if (!isset($_GET['id'])) {
-    header("Location: gerenciar_competicoes.php");
-    exit;
-}
+$equipe_id = $_GET['equipe_id'] ?? null;
 
-$equipe_id = $_GET['id'];
-
-$equipeController = new EquipeController($pdo);
-$equipe = $equipeController->buscarEquipePorId($equipe_id);
-
-if (!$equipe) {
+if (!$equipe_id) {
     echo "Equipe não encontrada.";
-    exit;
-}
-
-$competicaoController = new CompeticaoController($pdo);
-$competicao = $competicaoController->buscarCompeticaoPorId($equipe['competicao_id'], $_SESSION['user_id']);
-
-if (!$competicao) {
-    echo "Você não tem permissão para gerenciar jogadores desta equipe.";
     exit;
 }
 
 $jogadorController = new JogadorController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $jogadorController->criarJogador($_POST);
+    $nome = $_POST['nome'] ?? '';
+    $posicao = $_POST['posicao'] ?? '';
+
+    if (!empty($nome)) {
+        try {
+            $jogadorController->criarJogador([
+                'nome' => $nome,
+                'posicao' => $posicao,
+                'equipe_id' => $equipe_id
+            ]);
+            header("Location: gerenciar_jogadores.php?id=$equipe_id&success=1");
+            exit;
+        } catch (PDOException $e) {
+            echo "Erro ao adicionar jogador: " . $e->getMessage();
+            exit;
+        }
+    } else {
+        echo "O nome do jogador é obrigatório.";
+    }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Adicionar Jogador - <?= htmlspecialchars($equipe['nome']) ?></title>
+    <title>Adicionar Jogador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>Adicionar Jogador - <?= htmlspecialchars($equipe['nome']) ?> (<?= htmlspecialchars($competicao['nome']) ?>)</h2>
-    <a href="gerenciar_jogadores.php?id=<?= $equipe_id ?>">Voltar</a>
-    <br><br>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white p-6 rounded-lg shadow w-full max-w-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Adicionar Jogador</h2>
 
-    <form method="POST">
-        <input type="hidden" name="equipe_id" value="<?= $equipe_id ?>">
+        <form method="POST" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 mb-1">Nome do Jogador</label>
+                <input type="text" name="nome" class="w-full border rounded px-3 py-2" required>
+            </div>
 
-        <label>Nome:</label><br>
-        <input type="text" name="nome" required><br><br>
+            <div>
+                <label class="block text-gray-700 mb-1">Posição</label>
+                <input type="text" name="posicao" class="w-full border rounded px-3 py-2" placeholder="Ex: Atacante">
+            </div>
 
-        <label>CPF:</label><br>
-        <input type="text" name="cpf"><br><br>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                Cadastrar Jogador
+            </button>
+        </form>
 
-        <label>RG (Opcional):</label><br>
-        <input type="text" name="rg"><br><br>
-
-        <label>Data de Nascimento:</label><br>
-        <input type="date" name="data_nascimento"><br><br>
-
-        <label>Contato:</label><br>
-        <input type="text" name="contato"><br><br>
-
-        <button type="submit">Cadastrar Jogador</button>
-    </form>
+        <div class="mt-4 text-center">
+            <a href="gerenciar_jogadores.php?id=<?= htmlspecialchars($equipe_id) ?>" class="text-blue-600 hover:underline">
+                Voltar
+            </a>
+        </div>
+    </div>
 </body>
 </html>

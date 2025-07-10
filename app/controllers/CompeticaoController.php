@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../models/Competicao.php';
 
 class CompeticaoController {
@@ -32,17 +33,10 @@ class CompeticaoController {
         exit;
     }
 
-    public function listarCompeticoesDoUsuario($usuarioId) {
-    $sql = "SELECT c.*, m.nome AS modalidade_nome
-            FROM competicoes c
-            JOIN modalidades m ON c.modalidade_id = m.id
-            WHERE c.criado_por = :usuario_id
-            ORDER BY c.data_inicio DESC";
-
-    $stmt = $this->competicao->getPdo()->prepare($sql);
-    $stmt->execute([':usuario_id' => $usuarioId]);
-    return $stmt->fetchAll();
+    public function listarJogosDaCompeticao($competicao_id) {
+        return $this->competicao->listarJogosDaCompeticao($competicao_id);
     }
+    
 
     public function buscarCompeticaoPorId($competicao_id, $usuario_id) {
     $sql = "SELECT c.*, m.nome AS modalidade_nome
@@ -57,8 +51,21 @@ class CompeticaoController {
         ':usuario_id' => $usuario_id
     ]);
 
-    return $stmt->fetch();
-}
+    return $stmt->fetch();  
+
+    }
+
+    public function listarCompeticoesDoUsuario($usuarioId) {
+        $sql = "SELECT c.*, m.nome AS modalidade_nome
+                FROM competicoes c
+                JOIN modalidades m ON c.modalidade_id = m.id
+                WHERE c.criado_por = :usuario_id
+                ORDER BY c.data_inicio DESC";
+    
+        $stmt = $this->competicao->getPdo()->prepare($sql);
+        $stmt->execute([':usuario_id' => $usuarioId]);
+        return $stmt->fetchAll();
+    }
 
 
 }
