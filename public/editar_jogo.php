@@ -71,18 +71,11 @@ $time_b_nome = $time_b->fetchColumn();
                 </select>
             </div>
 
-            <!-- Eventos dos Jogadores -->
-            <h3 class="text-lg font-semibold text-center mt-6 mb-2">Eventos dos Jogadores</h3>
-            <div>
-                <label class="block text-gray-700 mb-1">Selecione o Time</label>
-                <select id="timeSelect" class="w-full border rounded px-3 py-2">
-                    <option value="">Selecione</option>
-                    <option value="<?= $time_a_id ?>"><?= htmlspecialchars($time_a_nome) ?></option>
-                    <option value="<?= $time_b_id ?>"><?= htmlspecialchars($time_b_nome) ?></option>
-                </select>
+         <div class="text-center mt-6">
+             <a href="evento_jogadores_jogo.php" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+              Gerenciar Eventos dos Jogadores
+             </a>
             </div>
-
-            <div id="jogadoresContainer" class="space-y-2 mt-4"></div>
 
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Salvar Alterações</button>
         </form>
@@ -92,49 +85,6 @@ $time_b_nome = $time_b->fetchColumn();
         </div>
     </div>
 
-<script>
-document.getElementById('timeSelect').addEventListener('change', function() {
-    const timeId = this.value;
-    const container = document.getElementById('jogadoresContainer');
-    container.innerHTML = 'Carregando jogadores...';
 
-    if (!timeId) {
-        container.innerHTML = '';
-        return;
-    }
-
-    fetch(`../api/get_jogadores_por_time.php?id=${timeId}`)
-    .then(response => response.json())
-    .then(jogadores => {
-        container.innerHTML = '';
-
-        if (jogadores.length === 0) {
-            container.innerHTML = '<p class="text-center text-gray-500">Nenhum jogador encontrado para este time.</p>';
-            return;
-        }
-
-        jogadores.forEach(jogador => {
-            const div = document.createElement('div');
-            div.className = "border p-2 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-gray-50";
-
-            div.innerHTML = `
-                <span class="font-medium">${jogador.nome}</span>
-                <div class="flex flex-wrap gap-2">
-                    <input type="hidden" name="jogadores[${jogador.id}][id]" value="${jogador.id}">
-                    <input type="number" name="jogadores[${jogador.id}][gols]" placeholder="Gols" class="w-20 border rounded px-2 py-1" min="0">
-                    <input type="number" name="jogadores[${jogador.id}][assist]" placeholder="Assists" class="w-20 border rounded px-2 py-1" min="0">
-                    <input type="number" name="jogadores[${jogador.id}][amarelos]" placeholder="Amarelos" class="w-24 border rounded px-2 py-1" min="0">
-                    <input type="number" name="jogadores[${jogador.id}][vermelhos]" placeholder="Vermelhos" class="w-24 border rounded px-2 py-1" min="0">
-                </div>
-            `;
-            container.appendChild(div);
-        });
-    })
-    .catch(error => {
-        console.error('Erro ao carregar jogadores:', error);
-        container.innerHTML = '<p class="text-center text-red-500">Erro ao carregar jogadores.</p>';
-    });
-});
-</script>
 </body>
 </html>
