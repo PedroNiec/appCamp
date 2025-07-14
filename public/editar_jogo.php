@@ -43,9 +43,15 @@ $time_b_nome = $time_b->fetchColumn();
     <div class="bg-white p-6 rounded-lg shadow w-full max-w-2xl">
         <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Editar Jogo</h2>
 
-        <form id="editarJogoForm" method="POST" class="space-y-4" action="salvar_editar_jogo.php">
-            <input type="hidden" name="jogo_id" value="<?= htmlspecialchars($jogo_id) ?>">
-
+        <form id="editarJogoForm" method="POST" class="space-y-4">
+<input
+    type="text"
+    name="jogo_id"
+    id = "jogoIdInput"
+    value="<?= htmlspecialchars($jogo['id']) ?>"
+    readonly
+    class="w-full border rounded px-3 py-2 bg-gray-100"
+/>
             <div>
                 <label class="block text-gray-700 mb-1">Rodada</label>
                 <input type="number" value="<?= htmlspecialchars($jogo['rodada']) ?>" readonly class="w-full border rounded px-3 py-2 bg-gray-100">
@@ -71,10 +77,10 @@ $time_b_nome = $time_b->fetchColumn();
                 </select>
             </div>
 
-         <div class="text-center mt-6">
-             <a href="evento_jogadores_jogo.php" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
-              Gerenciar Eventos dos Jogadores
-             </a>
+            <div class="text-center mt-6">
+           <a href="evento_jogadores_jogo.php?id=<?php echo urlencode(htmlspecialchars($jogo['id'])); ?>" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                 Gerenciar Eventos dos Jogadores
+            </a>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Salvar Alterações</button>
