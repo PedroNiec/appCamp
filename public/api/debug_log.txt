@@ -1,3 +1,0 @@
-RAW INPUT:
-{"competicao_id":"fbd936b3-815d-4c6a-8f62-17e684bdb9b5","time_a_id":"7603a915-d69a-4c36-b4e4-217462cf2871","time_b_id":"eb7b9068-e619-4aea-b556-b2afd880e796","rodada":"1"}
-

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         timeSelect.innerHTML = '<option>Carregando times...</option>';
         timeSelect.disabled = true;
 
-        fetch(`/appCamp/public/api/get_times.php?id=${encodeURIComponent(idDoJogo)}`)
+        fetch(`/public/api/get_times.php?id=${encodeURIComponent(idDoJogo)}`)
             .then(response => {
                 if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
                 return response.json();
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         jogadorSelect.innerHTML = '<option>Carregando jogadores...</option>';
         jogadorSelect.disabled = true;
 
-        fetch(`/appCamp/public/api/get_jogadores_por_time.php?time=${encodeURIComponent(nomeDoTime)}`)
+        fetch(`/public/api/get_jogadores_por_time.php?time=${encodeURIComponent(nomeDoTime)}`)
             .then(response => {
                 if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
                 return response.json();
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnSalvar) {
         btnSalvar.addEventListener('click', function () {
             const id_jogo = jogoIdInput?.value;
-            const time = timeSelect?.value;
+            const nome_time = timeSelect?.value;
             const jogador_id = jogadorSelect?.value;
             const gols = inputGols?.value;
             const gols_sofridos = inputGols?.value;
@@ -122,21 +122,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const cartao_vermelho = document.getElementById('cartaoVermelho')?.value || 0;
 
             // Validação simples
-            if (!id_jogo || !time || !jogador_id) {
+            if (!id_jogo || !nome_time || !jogador_id) {
                 alert("Preencha todos os campos obrigatórios.");
                 return;
             }
 
             const formData = new FormData();
             formData.append("id_jogo", id_jogo);
-            formData.append("time", time);
+            formData.append("nome_time", nome_time);
             formData.append("jogador_id", jogador_id);
             formData.append("gols", gols);
             formData.append("gols_sofridos", gols_sofridos);
             formData.append("cartao_amarelo", cartao_amarelo);
             formData.append("cartao_vermelho", cartao_vermelho);
 
-            fetch("/appCamp/public/api/update_evento_jogadores_jogo.php", {
+            fetch("/public/api/update_evento_jogadores.php", {
                 method: "POST",
                 body: formData
             })

@@ -64,7 +64,7 @@ if (!$jogo_id) {
 
     <button id="btnSalvar" type="button" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Salvar Alterações</button>
 
-     <script src="/appCamp/js/evento_jogadores.js"></script>
+     <script src="/js/evento_jogadores.js"></script>
 
 </body>
 </html>
