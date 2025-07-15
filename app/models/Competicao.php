@@ -48,11 +48,23 @@ class Competicao {
         return $dados;
     }
 
-    public function listarJogosDaCompeticao($competicao_id) {
+    public function listarJogosDaCompeticao($competicao_id)
+    {
         $sql = "
-            SELECT j.id, j.rodada, j.data, j.horario, j.local, j.status, j.placar_a, j.placar_b, j.criado_em,
-                   ta.nome AS equipe_a_nome,
-                   tb.nome AS equipe_b_nome
+            SELECT 
+                j.id,
+                j.rodada,
+                j.data,
+                j.horario,
+                j.local,
+                j.status,
+                j.placar_a,
+                j.placar_b,
+                j.criado_em,
+                ta.nome AS equipe_a_nome,
+                ta.logo AS logo_a,
+                tb.nome AS equipe_b_nome,
+                tb.logo AS logo_b
             FROM jogos j
             JOIN times ta ON j.equipe_a_id = ta.id
             JOIN times tb ON j.equipe_b_id = tb.id
@@ -63,6 +75,6 @@ class Competicao {
         $stmt->execute([':competicao_id' => $competicao_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     
 }

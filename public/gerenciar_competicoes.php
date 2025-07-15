@@ -75,6 +75,12 @@ $competicoes = $controller->listarCompeticoesDoUsuario($_SESSION['user_id']);
                                     <a href="gerenciar_jogos.php?id=<?= $comp['id'] ?>" class="inline-flex items-center bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-md transition">
                                         <span class="material-icons-outlined mr-1 text-sm">sports_soccer</span> Jogos
                                     </a>
+                                    <button 
+                                        onclick="copiarLink('<?= "http://localhost:3030/appCamp/public/landing_competicoes.php?id=" . $comp['id'] ?>')" 
+                                        class="inline-flex items-center bg-red-500 hover:bg-purple-600 text-white px-3 py-1 rounded-md transition">
+                                        <span class="material-icons-outlined mr-1 text-sm"></span> Link
+                                    </button>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -91,4 +97,17 @@ $competicoes = $controller->listarCompeticoesDoUsuario($_SESSION['user_id']);
     </div>
 
 </body>
+
+<script>
+function copiarLink(link) {
+    navigator.clipboard.writeText(link)
+        .then(() => {
+            alert("Link copiado para a área de transferência!");
+        })
+        .catch(err => {
+            alert("Erro ao copiar link: " + err);
+        });
+}
+</script>
+
 </html>
