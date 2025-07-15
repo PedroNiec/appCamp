@@ -20,14 +20,14 @@ if (!$jogo_id) {
         <h1 class="text-xl font-semibold text-gray-800 mb-4 text-center">Evento jogadores</h1>
 
 
-        <input type="hidden" id="jogoIdInput" value="<?php echo htmlspecialchars($jogo_id); ?>">
+    <input type="hidden" id="jogoIdInput" value="<?php echo htmlspecialchars($jogo_id); ?>">
 
-        <div>
-            <label class="block text-gray-700 mb-1">Selecione o Time</label>
-            <select id="timeSelect" class="w-full border rounded px-3 py-2">
-                <option value="">Selecione</option>
-            </select>
-        </div>
+    <div>
+         <label class="block text-gray-700 mb-1">Selecione o Time</label>
+         <select id="timeSelect" class="w-full border rounded px-3 py-2">
+        <option value="">Selecione</option>
+         </select>
+    </div>
 
     <div>
         <label class="block text-gray-700 mb-1">Selecione um Jogador</label>
@@ -62,7 +62,7 @@ if (!$jogo_id) {
 
     <div id="jogadoresContainer" class="space-y-2 mt-4"></div>
 
-    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Salvar Alterações</button>
+    <button id="btnSalvar" type="button" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Salvar Alterações</button>
 
      <script src="/appCamp/js/evento_jogadores.js"></script>
 

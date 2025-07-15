@@ -1,70 +1,65 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Obter o ID do jogo do campo oculto no HTML
+document.addEventListener('DOMContentLoaded', function () {
     const jogoIdInput = document.getElementById('jogoIdInput');
+    const timeSelect = document.getElementById('timeSelect');
+    const jogadorSelect = document.getElementById('jogadorSelect');
+    const inputGols = document.getElementById('gols');
+
     const jogoId = jogoIdInput ? jogoIdInput.value : null;
 
-    if (jogoId) {
-        console.log("UUID do Jogo (lido do HTML):", jogoId);
-        // 2. Chamar a função para carregar os times assim que a página estiver pronta
-        carregarTimes(jogoId);
-    } else {
-        console.error("Erro: Não foi possível encontrar o ID do jogo no HTML.");
-        // Opcional: Desabilitar o select se o ID do jogo não estiver disponível
-        const timeSelect = document.getElementById('timeSelect');
+    if (!jogoId) {
+        console.error("Erro: ID do jogo não encontrado.");
         if (timeSelect) {
             timeSelect.innerHTML = '<option>ID do Jogo não encontrado</option>';
             timeSelect.disabled = true;
         }
+        return;
     }
 
-    /**
-     * Função para carregar os times usando o ID do jogo fornecido.
-     * @param {string} idDoJogo - O UUID do jogo.
-     */
+    carregarTimes(jogoId);
+
+    if (timeSelect && jogadorSelect) {
+        timeSelect.addEventListener('change', function () {
+            const timeSelecionado = this.value;
+            if (timeSelecionado) {
+                carregarJogadoresDoTime(timeSelecionado);
+            } else {
+                jogadorSelect.innerHTML = '<option>Selecione um time primeiro</option>';
+                jogadorSelect.disabled = true;
+            }
+        });
+    }
+
+    if (inputGols) {
+        inputGols.addEventListener('input', function () {
+            if (parseInt(this.value) < 0) {
+                this.value = 0;
+            }
+        });
+    }
+
     function carregarTimes(idDoJogo) {
-        console.log("Chamando carregarTimes com o UUID:", idDoJogo);
-        const timeSelect = document.getElementById('timeSelect');
-
-        // Verificar se o elemento 'timeSelect' existe no DOM
-        if (!timeSelect) {
-            console.error("Erro: Elemento <select> com ID 'timeSelect' não encontrado no HTML.");
-            return; // Sair da função se o elemento não for encontrado
-        }
-
-        // Mostrar um estado de carregamento inicial
         timeSelect.innerHTML = '<option>Carregando times...</option>';
-        timeSelect.disabled = true; // Desabilitar enquanto carrega
+        timeSelect.disabled = true;
 
-        // Fazer a requisição à API para buscar os times
-        // A URL da sua API já está usando 'id', que corresponde ao que você está passando
         fetch(`/appCamp/public/api/get_times.php?id=${encodeURIComponent(idDoJogo)}`)
             .then(response => {
-                // Verificar se a resposta da rede foi bem-sucedida (status 2xx)
-                if (!response.ok) {
-                    // Lançar um erro para ser capturado pelo .catch se a resposta não for OK
-                    throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
-                }
-                return response.json(); // Analisar a resposta como JSON
+                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+                return response.json();
             })
             .then(times => {
-                // Limpar o select e adicionar a opção padrão
                 timeSelect.innerHTML = '<option value="">Selecione um time</option>';
-                timeSelect.disabled = false; // Habilitar o select
+                timeSelect.disabled = false;
 
-                const uniqueTeams = new Set(); // Usar um Set para evitar times duplicados
-
-                // Preencher o select com as equipes
+                const uniqueTeams = new Set();
                 times.forEach(time => {
-                    // Adicionar equipe_a se existir e não for duplicada
                     if (time.equipe_a && !uniqueTeams.has(time.equipe_a)) {
                         uniqueTeams.add(time.equipe_a);
                         const optionA = document.createElement('option');
-                        optionA.value = time.equipe_a;
-                        optionA.textContent = time.equipe_a;
+                         optionA.value = time.equipe_a;
+                            optionA.textContent = time.equipe_a;
                         timeSelect.appendChild(optionA);
                     }
 
-                    // Adicionar equipe_b se existir e não for duplicada
                     if (time.equipe_b && !uniqueTeams.has(time.equipe_b)) {
                         uniqueTeams.add(time.equipe_b);
                         const optionB = document.createElement('option');
@@ -82,17 +77,19 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erro ao carregar times:', error);
                 timeSelect.innerHTML = '<option>Erro ao carregar times</option>';
-                timeSelect.disabled = true; // Manter desabilitado em caso de erro
+                timeSelect.disabled = true;
             });
     }
 
-    function carregarJogadores(timeId) {
-    const jogadorSelect = document.getElementById('jogadorSelect');
-    jogadorSelect.innerHTML = '<option>Carregando...</option>';
+    function carregarJogadoresDoTime(nomeDoTime) {
+        jogadorSelect.innerHTML = '<option>Carregando jogadores...</option>';
+        jogadorSelect.disabled = true;
 
-    if (timeId) {
-        fetch(`/appCamp/public/api/get_jogadores_por_time.php?time_id=${timeId}`)
-            .then(response => response.json())
+        fetch(`/appCamp/public/api/get_jogadores_por_time.php?time=${encodeURIComponent(nomeDoTime)}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+                return response.json();
+            })
             .then(jogadores => {
                 jogadorSelect.innerHTML = '<option value="">Selecione um jogador</option>';
                 jogadores.forEach(jogador => {
@@ -101,44 +98,63 @@ document.addEventListener('DOMContentLoaded', function() {
                     option.textContent = jogador.nome;
                     jogadorSelect.appendChild(option);
                 });
+                jogadorSelect.disabled = false;
             })
             .catch(error => {
-                console.error('Erro ao buscar jogadores:', error);
-                jogadorSelect.innerHTML = '<option>Erro ao carregar</option>';
+                console.error('Erro ao carregar jogadores:', error);
+                jogadorSelect.innerHTML = '<option>Erro ao carregar jogadores</option>';
+                jogadorSelect.disabled = true;
             });
-    } else {
-        jogadorSelect.innerHTML = '<option value="">Selecione um jogador</option>';
     }
-}
+
+    const btnSalvar = document.getElementById('btnSalvar');
+
+    if (btnSalvar) {
+        btnSalvar.addEventListener('click', function () {
+            const id_jogo = jogoIdInput?.value;
+            const time = timeSelect?.value;
+            const jogador_id = jogadorSelect?.value;
+            const gols = inputGols?.value;
+            const gols_sofridos = inputGols?.value;
+
+            // Pode incluir mais campos, se necessário
+            const cartao_amarelo = document.getElementById('cartaoAmarelo')?.value || 0;
+            const cartao_vermelho = document.getElementById('cartaoVermelho')?.value || 0;
+
+            // Validação simples
+            if (!id_jogo || !time || !jogador_id) {
+                alert("Preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("id_jogo", id_jogo);
+            formData.append("time", time);
+            formData.append("jogador_id", jogador_id);
+            formData.append("gols", gols);
+            formData.append("gols_sofridos", gols_sofridos);
+            formData.append("cartao_amarelo", cartao_amarelo);
+            formData.append("cartao_vermelho", cartao_vermelho);
+
+            fetch("/appCamp/public/api/update_evento_jogadores_jogo.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Alterações salvas com sucesso!");
+                    // opcional: resetar campos ou redirecionar
+                } else {
+                    alert("Erro ao salvar: " + (data.message || 'Erro desconhecido'));
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição:", error);
+                alert("Erro de comunicação com o servidor.");
+            });
+        });
+    }
 });
 
 
-
-// === Função para impedir valores negativos no input de gols ===
-function impedirValorNegativo() {
-    const input = document.getElementById('gols');
-    if (!input) return;
-
-    input.addEventListener('input', function () {
-        if (parseInt(this.value) < 0) {
-            this.value = 0;
-        }
-    });
-}
-
-// === Função principal que será executada ao carregar a página ===
-function inicializarPagina() {
-    carregarTimes();
-    impedirValorNegativo();
-
-    const timeSelect = document.getElementById('timeSelect');
-    if (timeSelect) {
-        timeSelect.addEventListener('change', function () {
-            const timeId = this.value;
-            carregarJogadores(timeId);
-        });
-    }
-}
-
-// === Inicia o script quando a página terminar de carregar ===
-document.addEventListener('DOMContentLoaded', inicializarPagina);

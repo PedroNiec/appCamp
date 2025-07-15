@@ -2,11 +2,16 @@
 
 require_once __DIR__ . '/../../config/database.php';
 
-$time_id = isset($_GET['time_id']) ? intval($_GET['time_id']) : 0;
+$nome_do_time = isset($_GET['time']) ? $_GET['time'] : '';
 
-if ($time_id > 0) {
-    $stmt = $pdo->prepare("SELECT id, nome FROM jogadores WHERE time_id = ?");
-    $stmt->execute([$time_id]);
+if ($nome_do_time !== '') {
+    $stmt = $pdo->prepare("
+        SELECT j.id, j.nome
+        FROM jogadores j
+        JOIN times t ON j.time_id = t.id
+        WHERE t.nome = ?
+    ");
+    $stmt->execute([$nome_do_time]);
     $jogadores = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($jogadores);
 } else {
